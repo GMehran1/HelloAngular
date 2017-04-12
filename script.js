@@ -1,26 +1,4 @@
-// Code goes here
-(function() {
-  var app = angular.module("mainModule", []);
-var MainController = function($scope, $http) {
-  var onUserComplete = function(response) {
-    $scope.user = response.data;
-    $http.get($scope.user.repos_url)
-          .then(onRepos, onError);
-  };
-  var onRepos = function(response) {
-    $scope.repos = response.data;
-  }
-  var onError = function(reason) {
-    $scope.error = reason;
-  };
-  $scope.search = function(username) {
-  $http.get("https://api.github.com/users/" + username)
-    .then(onUserComplete, onError);
-  }
-    $scope.message = "Hello Angular";
-    $scope.username="Angular";
-    $scope.repoSortOrder="-stargazers_count";
-};
-app.controller("MainController", MainController);
+// Code goes here(function() {
+  var app = angular.module("mainModule", []);    var MainController = function($scope, $http, $location, $anchorScroll, $interval) {        var onUserComplete = function(response) {        $scope.user = response.data;        $http.get($scope.user.repos_url)              .then(onRepos, onError);      };
+    var onRepos = function(response) {        $scope.repos = response.data;        $location.hash("userdetails");        $anchorScroll();      }        var onError = function(reason) {        $scope.error = reason;      };        $scope.search = function(username) {      $http.get("https://api.github.com/users/" + username)        .then(onUserComplete, onError);        if(countdownInterval)          $interval.cancel(countdownInterval);      }        var decrementCountdown = function() {          $scope.countdown -= 1;          if($scope.countdown < 1) {            $scope.seach($scope.username);          }    }            $scope.message = "Hello Angular";    $scope.username="Angular";    $scope.repoSortOrder="-stargazers_count";    $scope.countdown = 5;    var countdownInterval = null;    countdownInterval = $interval(decrementCountdown, 1000, $scope.countdown);  };    app.controller("MainController", MainController);
 }());
-
